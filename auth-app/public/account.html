@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Your account | Lepide</title>
+  <link rel="icon" href="https://lepide-design-system.vercel.app/v1/brand/lepide-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="https://lepide-design-system.vercel.app/v1/lepidus.css">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body data-page="account">
+  <div class="page-shell">
+    <header class="site-header">
+      <div class="brand"><img class="header-mark" src="https://lepide-design-system.vercel.app/v1/brand/lepide-mark.svg" alt=""><span class="brand-name">Lepide</span></div>
+      <div class="theme-control">
+        <div class="lp-dropdown lp-dropdown--full-width" data-lp-dropdown="single" id="theme-picker">
+          <button class="lp-dropdown__trigger" aria-expanded="false" aria-haspopup="listbox" aria-label="Choose theme"><span class="lp-dropdown__trigger-label">Light</span><svg class="lp-dropdown__chevron" viewBox="0 0 12 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M1 1l5 4 5-4"/></svg></button>
+          <div class="lp-dropdown__panel" hidden>
+            <div class="lp-dropdown__header"><span class="lp-dropdown__header-label">Theme</span><svg class="lp-dropdown__chevron lp-dropdown__chevron--open" viewBox="0 0 12 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M1 1l5 4 5-4"/></svg></div>
+            <div class="lp-dropdown__list" role="listbox" aria-label="Theme">
+              <button class="lp-dropdown__option" role="option" data-value="light"><span class="lp-dropdown__option-label">Light</span></button>
+              <button class="lp-dropdown__option" role="option" data-value="dark"><span class="lp-dropdown__option-label">Dark</span></button>
+              <button class="lp-dropdown__option" role="option" data-value="hc"><span class="lp-dropdown__option-label">High contrast</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main class="auth-main">
+      <div class="auth-content">
+        <div class="intro"><img class="monogram" src="https://lepide-design-system.vercel.app/v1/brand/lepide-mark.svg" alt="Lepide" width="40" height="40"><h1 class="page-title" id="welcome">Your account</h1><p class="subtitle">You are signed in to Lepide.</p></div>
+        <div class="lp-message lp-message--error" role="alert" id="form-error" hidden><div class="lp-message__content"><div class="lp-message__text"><h3 class="lp-message__title">Unable to complete request</h3><p class="lp-message__body" id="form-error-text"></p></div></div></div>
+        <div class="lp-card">
+          <div class="lp-card__header"><div class="lp-card__title">Account details</div></div>
+          <div class="lp-card__body">
+            <dl class="account-details" id="account-details" aria-busy="true">
+              <div class="detail-row"><dt>Full name</dt><dd id="account-name">Loading...</dd></div>
+              <div class="detail-row"><dt>Email</dt><dd id="account-email">Loading...</dd></div>
+              <div class="detail-row"><dt>Member since</dt><dd id="account-created">Loading...</dd></div>
+            </dl>
+            <div class="account-actions"><button class="lp-button lp-button--secondary lp-button--md lp-button--full-width" id="logout-button" type="button">Sign out</button></div>
+          </div>
+        </div>
+        <noscript><p class="notice">Enable JavaScript to view your account and sign out.</p></noscript>
+      </div>
+    </main>
+    <footer class="site-footer">Lepide &middot; Your workspace, securely connected.</footer>
+  </div>
+  <script src="https://lepide-design-system.vercel.app/v1/lepidus.js" defer></script>
+  <script src="/app.js" defer></script>
+</body>
+</html>

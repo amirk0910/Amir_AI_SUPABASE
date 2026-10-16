@@ -1,0 +1,26 @@
+{
+  "name": "lepide-auth",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test",
+    "db:check": "node scripts/check-db.js",
+    "db:setup": "node scripts/setup-db.js",
+    "check": "node --check database.js && node --check scripts/check-db.js && node --check scripts/setup-db.js && node --check server.js && node --check public/app.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.1.0",
+    "helmet": "^8.1.0",
+    "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "pg-mem": "^3.0.14"
+  }
+}

@@ -1,0 +1,42 @@
+* { box-sizing: border-box; }
+body {
+  margin: var(--space-0);
+  min-height: 100svh;
+  background: var(--color-background-page);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-primary);
+  font-size: var(--typography-body-md-fontSize);
+  line-height: var(--typography-body-md-lineHeight);
+  letter-spacing: var(--typography-body-md-letterSpacing);
+}
+[hidden] { display: none !important; }
+.page-shell { min-height: 100svh; display: flex; flex-direction: column; }
+.site-header {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--space-8); padding: var(--space-10) var(--space-11);
+  border-bottom: var(--border-width-default) solid var(--color-border-default);
+  background: var(--color-background-surface);
+}
+.brand { display: flex; align-items: center; gap: var(--space-5); }
+.brand-name { font-size: var(--typography-heading-h5-fontSize); font-weight: bold; }
+.header-mark { width: var(--space-11); height: var(--space-11); }
+.theme-control { width: calc(var(--space-12) * 4); flex-shrink: 0; }
+.auth-main {
+  flex: 1; width: 100%; display: grid; place-items: center;
+  padding: var(--space-12) var(--space-8);
+}
+.auth-content { width: 100%; max-width: calc(var(--space-14) * 7); display: grid; gap: var(--space-10); }
+.intro { text-align: center; display: grid; justify-items: center; gap: var(--space-6); }
+.monogram { width: var(--space-12); height: var(--space-12); }
+.page-title { margin: var(--space-0); font-size: var(--typography-heading-h2-fontSize); line-height: var(--typography-heading-h2-lineHeight); overflow-wrap: anywhere; }
+.subtitle, .account-note { margin: var(--space-0); color: var(--color-text-secondary); }
+.form-stack { display: grid; gap: var(--space-9); }
+.form-options { display: flex; align-items: center; justify-content: space-between; gap: var(--space-8); flex-wrap: wrap; }
+.account-note { text-align: center; }
+.site-footer { padding: var(--space-9); text-align: center; color: var(--color-text-secondary); font-size: var(--typography-body-sm-fontSize); }
+.account-details { margin: var(--space-0); display: grid; gap: var(--space-9); }
+.detail-row { display: grid; gap: var(--space-2); }
+.detail-row dt { color: var(--color-text-secondary); font-size: var(--typography-body-sm-fontSize); }
+.detail-row dd { margin: var(--space-0); color: var(--color-text-primary); overflow-wrap: anywhere; }
+.account-actions { margin-top: var(--space-10); }
+.notice { text-align: center; color: var(--color-text-danger); }

@@ -1,0 +1,73 @@
+You are building UI for a product that uses the Lepidus Design System.
+The design contract is the file @lepidus-design.md in this repo (also at
+https://lepide-design-system.vercel.app/design.md). It is the source of truth.
+Read it before writing any markup — in particular:
+  - the Rules section at the top (classes, tokens, theming, hooks),
+  - §5 "Component contracts": the legal class set, canonical HTML and
+    hard-fail checks for every component you use,
+  - §8 "Observed AI drift": mistakes other assistants made — do not repeat them,
+  - the "Worked examples" (two complete validated screens) for page structure.
+
+TASK
+Create a Login page as one self-contained file: src/pages/login.html.
+Content, top to bottom, centred in the viewport:
+  1. The Lepide monogram (hotlink https://lepide-design-system.vercel.app/v1/brand/lepide-mark.svg,
+     40×40, alt="Lepide") above an H1 "Sign in to Lepide".
+  2. A surface card containing:
+     - "Email" field (lp-input, label on top, type="email", required, helper text
+       "Use your work email").
+     - "Password" field (lp-input, label on top, type="password", required) with
+       the documented error state ready: an lp-input__message--error element,
+       aria-invalid + aria-describedby wired, hidden until validation fails.
+     - A row with an lp-checkbox "Remember me" on the left and a text link
+       "Forgot password?" on the right.
+     - A primary, full-width "Sign in" button (lp-button, --full-width modifier).
+     - An inline error message component (lp-message, danger/error variant from
+       the contract) above the button, hidden by default, shown when the form
+       is submitted with empty fields.
+  3. Below the card: "No account? Contact your administrator." as body text.
+  4. A theme switcher (light / dark / hc) in the top-right corner, built with
+     lp-dropdown (data-lp-dropdown="single") — NOT a native <select>.
+     Listen for the `lp-dropdown-change` event on the wrapper and set
+     data-theme on <html>.
+
+HARD RULES (the page fails review if any is broken)
+  - Use only lp-* classes that appear in @lepidus-design.md. Never invent a
+    class, element or modifier. Copy the canonical anatomy from §5 exactly —
+    nesting, wrapper elements, label spans, chevron SVGs and all.
+  - Link the stylesheet and script exactly like this, nothing else:
+      <link rel="stylesheet" href="https://lepide-design-system.vercel.app/v1/lepidus.css">
+      <script src="https://lepide-design-system.vercel.app/v1/lepidus.js" defer></script>
+  - Set data-theme="light" on <html>; themes are switched only by changing
+    that attribute. Never write per-theme colours by hand.
+  - No hardcoded colours, spacing, radii or font sizes anywhere (no hex, rgb,
+    px values for those). Page-level layout CSS (centering the card, the
+    top-right switcher position, max-width) uses var(--space-*),
+    var(--color-background-*), var(--color-border-*), var(--radius-*),
+    var(--typography-*) tokens from the token appendix in @lepidus-design.md.
+    Only use token names that exist there; never guess a name and add a hex
+    fallback.
+  - Page CSS must never target .lp-* selectors. Widths come from the
+    documented modifiers (e.g. lp-button--full-width, lp-input--full-width,
+    lp-dropdown--full-width), label placement from lp-input__row--label-top.
+  - Do not write click/keyboard handlers for parts lepidus.js owns
+    (.lp-dropdown__trigger, .lp-dropdown__option, [data-lp-modal-open], tabs,
+    accordion, stepper). Your only JS: the form submit validation and the
+    theme switch via the lp-dropdown-change event.
+  - Exactly one label per field, inside the component (lp-input__label); no
+    external <label for>. No custom ".field" wrappers around components.
+  - Keep the documented accessibility markup: aria-invalid + aria-describedby
+    on invalid inputs, role/aria attributes exactly as in the contract,
+    visible focus left to the system styles, a <main> landmark, lang on <html>.
+  - If you need a component the contract marks "React-only", stop and tell
+    me instead of hand-building it.
+
+OUTPUT
+  - The complete src/pages/login.html (a full document with <!doctype html>,
+    <html lang="en" data-theme="light">, <head>, <body>).
+  - Then a short checklist, one line per hard rule above, stating how the
+    file satisfies it, and a list of every lp-* class you used so I can
+    diff it against the contract.
+  - If the design-system repo is available, run
+      node scripts/validate-lp-html.mjs src/pages/login.html
+    and paste the output; fix every FAIL line before finishing.

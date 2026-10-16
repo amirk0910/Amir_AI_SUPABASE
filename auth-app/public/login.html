@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign in to Lepide</title>
+  <link rel="icon" href="https://lepide-design-system.vercel.app/v1/brand/lepide-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="https://lepide-design-system.vercel.app/v1/lepidus.css">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body data-page="login">
+  <div class="page-shell">
+    <header class="site-header">
+      <div class="brand"><img class="header-mark" src="https://lepide-design-system.vercel.app/v1/brand/lepide-mark.svg" alt=""><span class="brand-name">Lepide</span></div>
+      <div class="theme-control">
+        <div class="lp-dropdown lp-dropdown--full-width" data-lp-dropdown="single" id="theme-picker">
+          <button class="lp-dropdown__trigger" aria-expanded="false" aria-haspopup="listbox" aria-label="Choose theme">
+            <span class="lp-dropdown__trigger-label">Light</span>
+            <svg class="lp-dropdown__chevron" viewBox="0 0 12 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M1 1l5 4 5-4"/></svg>
+          </button>
+          <div class="lp-dropdown__panel" hidden>
+            <div class="lp-dropdown__header"><span class="lp-dropdown__header-label">Theme</span><svg class="lp-dropdown__chevron lp-dropdown__chevron--open" viewBox="0 0 12 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M1 1l5 4 5-4"/></svg></div>
+            <div class="lp-dropdown__list" role="listbox" aria-label="Theme">
+              <button class="lp-dropdown__option" role="option" data-value="light"><span class="lp-dropdown__option-label">Light</span></button>
+              <button class="lp-dropdown__option" role="option" data-value="dark"><span class="lp-dropdown__option-label">Dark</span></button>
+              <button class="lp-dropdown__option" role="option" data-value="hc"><span class="lp-dropdown__option-label">High contrast</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main class="auth-main">
+      <div class="auth-content">
+        <div class="intro">
+          <img class="monogram" src="https://lepide-design-system.vercel.app/v1/brand/lepide-mark.svg" alt="Lepide" width="40" height="40">
+          <h1 class="page-title">Sign in to Lepide</h1>
+          <p class="subtitle">Welcome back. Enter your account details.</p>
+        </div>
+        <div class="lp-message lp-message--error" role="alert" id="form-error" hidden>
+          <div class="lp-message__content"><div class="lp-message__text"><h3 class="lp-message__title">Unable to sign in</h3><p class="lp-message__body" id="form-error-text"></p></div></div>
+        </div>
+        <div class="lp-card">
+          <div class="lp-card__body">
+            <form id="auth-form" class="form-stack" novalidate>
+              <div class="lp-input lp-input--full-width">
+                <div class="lp-input__row lp-input__row--label-top">
+                  <label class="lp-input__label" for="email">Email</label>
+                  <div class="lp-input__field"><input class="lp-input__input" id="email" name="email" type="email" autocomplete="username" placeholder="you@company.com" maxlength="254" required aria-describedby="email-hint email-error" aria-invalid="false"></div>
+                </div>
+                <div class="lp-input__message" id="email-hint">Use your work email.</div>
+                <div class="lp-input__message lp-input__message--error" id="email-error" hidden></div>
+              </div>
+              <div class="lp-input lp-input--full-width">
+                <div class="lp-input__row lp-input__row--label-top">
+                  <label class="lp-input__label" for="password">Password</label>
+                  <div class="lp-input__field"><input class="lp-input__input" id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" maxlength="128" required aria-describedby="password-error" aria-invalid="false"></div>
+                </div>
+                <div class="lp-input__message lp-input__message--error" id="password-error" hidden></div>
+              </div>
+              <div class="form-options">
+                <label class="lp-checkbox">
+                  <span class="lp-checkbox__control">
+                    <input class="lp-checkbox__input" type="checkbox" name="remember" id="remember">
+                    <span class="lp-checkbox__box" aria-hidden="true">
+                      <svg class="lp-checkbox__check" viewBox="0 0 10 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4.2 3.8 7 9 1"/></svg>
+                      <svg class="lp-checkbox__dash" viewBox="0 0 10 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1 1h8"/></svg>
+                    </span>
+                  </span>
+                  <span class="lp-checkbox__label">Remember me for 30 days</span>
+                </label>
+              </div>
+              <button class="lp-button lp-button--primary lp-button--md lp-button--full-width" id="submit-button" type="submit">Sign in</button>
+            </form>
+          </div>
+        </div>
+        <p class="account-note">New to Lepide? <a class="lp-link lp-link--inline" href="/signup">Create an account</a></p>
+        <noscript><p class="notice">Enable JavaScript to sign in.</p></noscript>
+      </div>
+    </main>
+    <footer class="site-footer">Lepide &middot; Your workspace, securely connected.</footer>
+  </div>
+  <script src="https://lepide-design-system.vercel.app/v1/lepidus.js" defer></script>
+  <script src="/app.js" defer></script>
+</body>
+</html>
