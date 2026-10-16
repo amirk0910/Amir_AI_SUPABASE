@@ -4,7 +4,7 @@ Node.js + Express application using the Lepidus design contract in the parent fo
 
 ## Run
 
-Requires Node.js 24 or newer. Authentication uses database tables only, not Supabase Auth, email confirmation, or Supabase API keys. Passwords are stored as salted hashes, never plaintext.
+Requires Node.js 24.x. Authentication uses database tables only, not Supabase Auth, email confirmation, or Supabase API keys. Passwords are stored as salted hashes, never plaintext.
 
 Keep `PORT=5180` and `APP_ORIGIN=http://localhost:5180` in the local `.env`. A blank `DATABASE_URL` selects local SQLite storage at `data/app.sqlite`. A configured but unavailable PostgreSQL database fails startup; it never silently falls back to SQLite. The `.env` file is ignored by Git and never served to browsers. Existing environment variables take precedence over it. Commit only `.env.example`, not `.env`.
 
@@ -37,6 +37,16 @@ npm start
 
 For Supabase, use the sequence above. For SQLite, leave `DATABASE_URL` blank and skip `db:check` and `db:setup`; local tables are created automatically. Open http://localhost:5180. If you change the port, update `APP_ORIGIN` as well. `npm run dev` enables the Node.js file watcher.
 
+## Deploy To Vercel
+
+1. In Vercel Project Settings, set Root Directory to `auth-app`, Framework Preset to Other, and Node.js Version to 24.x. Leave the Build Command and Output Directory overrides disabled. Do not use `npm start` as a build command. The included `vercel.json` routes requests to `api/index.js` and bundles the HTML pages and public database CA certificate.
+2. Add `DATABASE_URL` in Project Settings > Environment Variables for Production (and separately for Preview if needed). Use the working Supabase Session pooler URI from your local `.env`. Your local `.env` is intentionally not committed and is not transferred to Vercel through GitHub.
+3. Set `APP_ORIGIN=https://ai-supabase-delta.vercel.app` without a trailing slash, `DATABASE_SSL_REJECT_UNAUTHORIZED=true`, and `DATABASE_CA_CERT_PATH=./prod-ca-2021.crt` if this is the CA downloaded for your database. The public CA certificate is bundled; no private key is required. Remove any `DATABASE_TLS_SKIP_VERIFY` override. Vercel supplies `NODE_ENV=production`; the app uses Secure cookies. Do not copy localhost `APP_ORIGIN` or `PORT` into the production environment.
+4. Ensure `npm run db:setup` has succeeded locally against the same Supabase project. Do not run schema setup on every request or deployment build. Publish the code changes and create a new Vercel deployment after saving environment variables; existing deployments do not pick up changed environment values.
+5. Visit `/login` and test signup, login, and logout. If startup fails, open the deployment's Runtime Logs and find `Application initialization failed`. The log gives a secret-free database error code; never paste environment values or the full connection URI into chat.
+
+The function initializes Express and its connection pool once per warm instance, reuses them for concurrent requests, and retries initialization after a failure. Missing `DATABASE_URL` on Vercel is a configuration error, never an attempt to write SQLite files to the deployment filesystem. Preview domains need their own matching `APP_ORIGIN` if you test authentication there.
+
 ## Verify
 
 ```sh
@@ -55,7 +65,7 @@ Passwords use Node.js scrypt with a random per-account salt. Sessions use random
 
 Use HTTPS with `NODE_ENV=production` to enable Secure cookies. By default, the connection pool uses verified TLS with default and operating-system certificate authorities plus the optional Supabase CA certificate. The temporary development bypass described above must not be used in production. Rotate credentials that have been shared in chat and update `.env` locally without committing it.
 
-This server currently runs as a persistent Node.js process using the supplied session pooler connection. PostgreSQL storage no longer needs a local persistent disk, but Vercel deployment still requires a serverless entry point, appropriate proxy configuration, pool sizing and a shared rate-limit store. Email verification, password recovery, MFA, and email delivery are not included.
+Locally, the server runs as a persistent Node.js process. Vercel uses the dedicated function entry point and trusts one platform proxy hop. Each function instance has its own pool of up to five connections; monitor Supabase pooler capacity as the deployment scales. Rate limits remain in-memory per instance: use a shared rate-limit store or platform protection before a wider production rollout. Email verification, password recovery, MFA, and email delivery are not included.
 
 ## Design Fidelity
 

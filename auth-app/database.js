@@ -11,7 +11,9 @@ if (existsSync(environmentFile)) loadEnvFile(environmentFile);
 
 export function createDatabase({ requirePostgres = false, sqlitePath } = {}) {
   if (!process.env.DATABASE_URL?.trim()) {
-    if (requirePostgres) throw new Error('DATABASE_URL is required for Supabase setup and connection checks.');
+    if (requirePostgres || process.env.VERCEL) {
+      throw Object.assign(new Error('DATABASE_URL is required for Supabase on Vercel.'), { code: 'DATABASE_URL_REQUIRED' });
+    }
     mkdirSync(new URL('./data/', import.meta.url), { recursive: true });
     const sqlite = new DatabaseSync(sqlitePath || fileURLToPath(new URL('./data/app.sqlite', import.meta.url)));
     sqlite.exec(`
@@ -72,6 +74,7 @@ export async function initializeDatabase(database) {
 
 export function databaseErrorMessage(error) {
   const messages = {
+    DATABASE_URL_REQUIRED: 'Set DATABASE_URL in Vercel Project Settings > Environment Variables and redeploy. Local .env files are not uploaded.',
     '28P01': 'Supabase rejected the database login. Check the Session pooler username and URL-encoded database password in DATABASE_URL.',
     '3D000': 'The selected database does not exist. Copy the Session pooler URI from Supabase Connect; its database path is normally /postgres.',
     SELF_SIGNED_CERT_IN_CHAIN: 'TLS certificate verification failed. Configure the Supabase CA with DATABASE_CA_CERT_PATH or NODE_EXTRA_CA_CERTS.',

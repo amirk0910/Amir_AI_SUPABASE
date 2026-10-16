@@ -21,6 +21,7 @@ export async function createApp({ database = createDatabase(), secureCookies = p
     throw error;
   }
   const app = express();
+  if (process.env.VERCEL) app.set('trust proxy', 1);
   app.disable('x-powered-by');
   app.use(helmet({ contentSecurityPolicy: { directives: {
     defaultSrc: ["'self'"],

@@ -2,8 +2,10 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { newDb } from 'pg-mem';
+import { createServer } from 'node:http';
 import { createApp } from '../server.js';
 import { createDatabase, databaseErrorMessage } from '../database.js';
+import { createHandler } from '../api/index.js';
 
 function createTestDatabase(memory = newDb({ noAstCoverageCheck: true })) {
   const { Pool } = memory.adapters.createPg();
@@ -98,6 +100,56 @@ test('explicit application origin accepts HTTPS termination and rejects other or
   });
   assert.equal((await post('https://app.example.com')).status, 400);
   assert.equal((await post('https://untrusted.example')).status, 403);
+});
+
+test('Vercel handler serves pages, assets and API with one shared initialization', async (context) => {
+  const database = createTestDatabase();
+  let initializations = 0;
+  const handler = createHandler(() => {
+    initializations += 1;
+    return createApp({ database, secureCookies: true });
+  });
+  const server = createServer(handler).listen(0);
+  context.after(async () => { await new Promise((resolve) => server.close(resolve)); await database.end(); });
+  await new Promise((resolve) => server.once('listening', resolve));
+  const base = `http://127.0.0.1:${server.address().port}`;
+  const responses = await Promise.all(['/login', '/styles.css', '/api/me'].map((route) => fetch(`${base}${route}`)));
+  assert.deepEqual(responses.map((response) => response.status), [200, 200, 401]);
+  assert.match(await responses[0].text(), /Sign in to Lepide/);
+  assert.equal(initializations, 1);
+});
+
+test('Vercel handler returns a safe response and retries failed initialization', async (context) => {
+  let attempts = 0;
+  const handler = createHandler(() => {
+    attempts += 1;
+    if (attempts === 1) throw Object.assign(new Error('sensitive connection details'), { code: '28P01' });
+    return (request, response) => response.end('ready');
+  });
+  const server = createServer(handler).listen(0);
+  context.after(() => new Promise((resolve) => server.close(resolve)));
+  await new Promise((resolve) => server.once('listening', resolve));
+  const base = `http://127.0.0.1:${server.address().port}`;
+  const failed = await fetch(base);
+  assert.equal(failed.status, 503);
+  assert.equal(failed.headers.get('cache-control'), 'no-store');
+  assert.doesNotMatch(await failed.text(), /sensitive connection details|28P01/);
+  assert.equal(await (await fetch(base)).text(), 'ready');
+  assert.equal(attempts, 2);
+});
+
+test('Vercel requires PostgreSQL instead of writing SQLite files', (context) => {
+  const originalUrl = process.env.DATABASE_URL;
+  const originalVercel = process.env.VERCEL;
+  context.after(() => {
+    for (const [key, value] of Object.entries({ DATABASE_URL: originalUrl, VERCEL: originalVercel })) {
+      if (value === undefined) delete process.env[key];
+      else process.env[key] = value;
+    }
+  });
+  process.env.DATABASE_URL = '';
+  process.env.VERCEL = '1';
+  assert.throws(() => createDatabase(), { code: 'DATABASE_URL_REQUIRED' });
 });
 
 test('accounts and sessions survive restarting the server', async (context) => {
